@@ -54,11 +54,14 @@ m.addConstrs(decision_var.sum(p.index, '*') == 2 for p in points)
 
 # 子圈消除约束：callback + lazy constraints
 def sub_tour_eliminate(model, where):
+    # 如果当前优化状态为找到新的MIP解
     if where == GRB.Callback.MIPSOL:
-        print("sub")
+        # 获取当前解
         values = model.cbGetSolution(model._vars)
         selected = gp.tuplelist((i, j) for i, j in model._vars.keys() if values[i, j] > 0.5)
+        # 找到最小的圈
         cycle = get_sub_tour(selected)
+        # 如果最小的圈长度不等于节点数，表明是子圈，将该圈的子圈消除约束添加到模型中
         if len(cycle) < number:
             model.cbLazy(gp.quicksum(model._vars[i, j] for i, j in combinations(cycle, 2)) <= len(cycle) - 1)
 
