@@ -37,7 +37,7 @@ def MIP_model(points_count, vehicle_count, vehicle_capacity, points_list):
     """
     (2)决策变量和目标函数
     """
-    model = gp.Model('VRP')
+    model = gp.Model('CVRP')
     select = model.addVars(edges, vtype=GRB.BINARY, name='select')
     flow = model.addVars(customers, vtype=GRB.CONTINUOUS, name='flow')
     model.setObjective(select.prod(distance), GRB.MINIMIZE)
