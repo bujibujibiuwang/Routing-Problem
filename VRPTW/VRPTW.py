@@ -63,8 +63,13 @@ def MIP_model(points_count, vehicle_count, vehicle_capacity, points_list):
     model.addConstr(select.sum('*', 0) <= vehicle_count)
 
     # (3) 流量约束
-    model.addConstrs(flow[i] + demand[i] <= flow[j] + vehicle_capacity*(1 - select[i, j]) for i, j in edges if j != 0)
-    model.addConstrs(flow[i] + demand[i] >= flow[j] - BigM * (1 - select[i, j]) for i, j in edges if j != 0)
+    # model.addConstrs(flow[i] + demand[i] <= flow[j] + vehicle_capacity*(1 - select[i, j]) for i, j in edges if j != 0)
+    # model.addConstrs(flow[i] + demand[i] >= flow[j] - BigM * (1 - select[i, j]) for i, j in edges if j != 0)
+
+    model.addConstrs((select[i, j] == 1) >> (flow[i] + points_list[j].demand == flow[j])
+                     for i, j in edges if i != 0 and j != 0)
+    model.addConstrs(points_list[i].demand <= flow[i] for i in customers)
+    model.addConstrs(flow[i] <= vehicle_capacity for i in customers)
 
     # (4)时间约束
     model.addConstrs(start[i] + int(distance[(i, j)]) + time[i] - BigM * (1 - select[i, j])

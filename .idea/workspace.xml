@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="bc0894df-81aa-49ff-8de4-96f64c95c4df" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/VRPTW/VRPTW.py" beforeDir="false" afterPath="$PROJECT_DIR$/VRPTW/VRPTW.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,7 +44,7 @@
       <recent name="$PROJECT_DIR$/TSP/TSP_Gurobi" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.MTZ_VRP (1)">
+  <component name="RunManager" selected="Python.VRPTW">
     <configuration name="MTZ_VRP (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Routing Problem" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -130,9 +131,9 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.VRPTW" />
         <item itemvalue="Python.MTZ_VRP (1)" />
         <item itemvalue="Python.TSP" />
-        <item itemvalue="Python.VRPTW" />
         <item itemvalue="Python.MTZ_VRP" />
       </list>
     </recent_temporary>
