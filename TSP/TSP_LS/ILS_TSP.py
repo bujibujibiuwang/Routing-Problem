@@ -64,7 +64,7 @@ def plot(path, points):
     plt.show()
 
 
-node_count, points = read('../TSP_Gurobi/berlin52.txt')
+node_count, points = read('../TSP_Gurobi/Berlin52.txt')
 p, d = iterated_local_search(node_count, points, 700)
 plot(p, points)
 

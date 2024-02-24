@@ -36,7 +36,7 @@ def distance(point1, point2):
     return diff
 
 
-number, points = read('./berlin52.txt')
+number, points = read('Berlin52.txt')
 dist = {(p1.index, p2.index): distance(p1, p2) for p1, p2 in combinations(points, 2)}
 print(dist)
 '''
