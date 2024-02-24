@@ -2,12 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="bc0894df-81aa-49ff-8de4-96f64c95c4df" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TSP/TSP_Gurobi/OPTmain.py" beforeDir="false" afterPath="$PROJECT_DIR$/TSP/TSP_Gurobi/TSP.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TSP/TSP_Gurobi/berlin52.txt" beforeDir="false" afterPath="$PROJECT_DIR$/TSP/TSP_Gurobi/Berlin52.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TSP/TSP_LS/ILSmain.py" beforeDir="false" afterPath="$PROJECT_DIR$/TSP/TSP_LS/ILS_TSP.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TSP/TSP_LS/berlin52.txt" beforeDir="false" afterPath="$PROJECT_DIR$/TSP/TSP_LS/Berlin52.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TSP/TSP_LS/bestsolution.png" beforeDir="false" afterPath="$PROJECT_DIR$/TSP/TSP_LS/Berlin52_solution.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
