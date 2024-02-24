@@ -2,9 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="bc0894df-81aa-49ff-8de4-96f64c95c4df" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/VRPTW/R101.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/VRPTW/VRPTW.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/VRPTW/C101.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/VRPTW/R101.txt" beforeDir="false" afterPath="$PROJECT_DIR$/VRPTW/R101.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/VRPTW/VRPTW.py" beforeDir="false" afterPath="$PROJECT_DIR$/VRPTW/VRPTW.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -41,6 +42,27 @@
     </key>
   </component>
   <component name="RunManager" selected="Python.VRPTW">
+    <configuration name="MTZ_VRP (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="Routing Problem" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/CVRP" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/CVRP/MTZ_VRP.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="MTZ_VRP" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Routing Problem" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -107,6 +129,7 @@
     <recent_temporary>
       <list>
         <item itemvalue="Python.VRPTW" />
+        <item itemvalue="Python.MTZ_VRP (1)" />
         <item itemvalue="Python.MTZ_VRP" />
         <item itemvalue="Python.OPTmain" />
       </list>

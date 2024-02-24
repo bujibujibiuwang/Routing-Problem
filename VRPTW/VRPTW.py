@@ -39,54 +39,43 @@ def MIP_model(points_count, vehicle_count, vehicle_capacity, points_list):
     customers = [i for i in range(1, points_count)]
     edges = [(i, j) for i in range(points_count) for j in range(points_count) if i != j]
     distance = {(i, j): length(points_list[i], points_list[j]) for i, j in edges}
-    vehicles = [*range(vehicle_count)]
     demand = [p.demand for p in points_list]
     time = [p.service for p in points_list]
-    print(demand)
-    print(time)
     BigM = 100000
     """
     (2)决策变量和目标函数
     """
-    model = gp.Model('VRPTW')
-    select = model.addVars(edges, vehicles, vtype=GRB.BINARY, name='x(i,j,k)')
-    start = model.addVars(points, vehicles, vtype=GRB.CONTINUOUS, name='s(i,k)')
-    model.setObjective(gp.quicksum(select[i, j, k] * distance[i, j] for k in vehicles for i, j in edges), GRB.MINIMIZE)
+    model = gp.Model('VRP with time window')
+    select = model.addVars(edges, vtype=GRB.BINARY, name='select')
+    flow = model.addVars(points, lb=0, ub=vehicle_capacity, vtype=GRB.CONTINUOUS, name='flow')
+    flow[0].UB = 0
+    start = model.addVars(points, vtype=GRB.CONTINUOUS, name='start')
+    model.setObjective(select.prod(distance), GRB.MINIMIZE)
     """
     (3)约束条件
     """
-    # (1)每个客户只访问一次
-    model.addConstrs(select.sum(i, '*', '*') == 1 for i in customers)
-    model.addConstrs(select.sum('*', j, '*') == 1 for j in customers)
-    # (2)每辆车容量限制
-    model.addConstrs(gp.quicksum(select[i, j, k] * demand[i] for i, j in edges) <= vehicle_capacity for k in vehicles)
-    # (3)车辆起点约束
-    model.addConstrs(select.sum(0, '*', k) == 1 for k in vehicles)
-    # (4)车辆终点约束
-    model.addConstrs(select.sum('*', 0, k) == 1 for k in vehicles)
-    # (5)车辆到达客户节点后离开
-    model.addConstrs(select.sum('*', j, k) == select.sum(j, '*', k) for j in customers for k in vehicles)
-    # (6)车辆数量限制
-    model.addConstr(select.sum(0, '*', '*') <= vehicle_count)
-    model.addConstr(select.sum('*', 0, '*') <= vehicle_count)
-    # (7)时间窗顺序约束
-    model.addConstrs(start[i, k] + int(distance[(i, j)]) + time[i] - BigM * (1 - select[i, j, k])
-                     <= start[j, k] for i, j in edges for k in vehicles)
-    # (8)时间窗大小约束
-    model.addConstrs(start[i, k] >= points_list[i].ready for i in customers for k in vehicles)
-    model.addConstrs(start[i, k] <= points_list[i].due for i in customers for k in vehicles)
+    # (1) 每个客户点一条出边和入边
+    model.addConstrs(select.sum(i, '*') == 1 for i in customers)
+    model.addConstrs(select.sum('*', j) == 1 for j in customers)
 
-    model.addConstrs(start[i, k] <= BigM * select.sum(i, '*', k) for i in customers for k in vehicles)
+    # (2) 车辆数量约束
+    model.addConstr(select.sum(0, '*') <= vehicle_count)
+    model.addConstr(select.sum('*', 0) <= vehicle_count)
 
-    # model.setParam('TimeLimit', 10)
+    # (3) 流量约束
+    model.addConstrs(flow[i] + demand[i] <= flow[j] + vehicle_capacity*(1 - select[i, j]) for i, j in edges if j != 0)
+    model.addConstrs(flow[i] + demand[i] >= flow[j] - BigM * (1 - select[i, j]) for i, j in edges if j != 0)
+
+    # (4)时间约束
+    model.addConstrs(start[i] + int(distance[(i, j)]) + time[i] - BigM * (1 - select[i, j])
+                     <= start[j] for i, j in edges if j != 0)
+    model.addConstrs(start[i] >= points_list[i].ready for i in points)
+    model.addConstrs(start[i] <= points_list[i].due for i in points)
+    """
+    (4)求解模型
+    """
     model.optimize()
-
-    arcs = []
-    for k in vehicles:
-        for i, j in edges:
-            if select[i, j, k].x > 0.99:
-                arcs.append((i, j))
-    print(arcs)
+    arcs = [e for e in edges if select[e].x > 0.99]
     hash_table = defaultdict(list)
     for e in arcs:
         hash_table[e[0]].append(e[1])
@@ -105,7 +94,6 @@ def MIP_model(points_count, vehicle_count, vehicle_capacity, points_list):
 file_path = './R101.txt'
 point_cnt, vehicle_cnt, vehicle_cap, points_ls = read(file_path)
 print(point_cnt, vehicle_cnt, vehicle_cap, points_ls)
-vehicle_cnt = 7
 opt_tours = MIP_model(point_cnt, vehicle_cnt, vehicle_cap, points_ls)
 print(opt_tours)
 
