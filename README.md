@@ -1,9 +1,16 @@
-路径规划问题
+路径规划问题Routing Problem
 
-（1）旅行商问题✅
+1. **旅行商问题 Travelling salesman problem (TSP)**
 
-（2）带容量约束的车辆路径问题✅
+- Gurobi + Python
+- Local Search
 
-（3）带取付货物约束的车辆路径问题
+2. **带容量约束的车辆路径问题 Capacitated vehicle routing problem (CVRP)**
 
-（4）带时间窗约束的车辆路径问题
+- Gurobi + Python
+
+3. **带时间窗约束的车辆路径问题 Vehicle routing problems with time windows (VRPTW)**
+
+- Gurobi + Python
+- Benchmark: https://www.sintef.no/projectweb/top/vrptw/100-customers/
+- 模型参考：https://github.com/ruthmair/vrp/blob/main/vrptw.ipynb
