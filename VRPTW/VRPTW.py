@@ -67,7 +67,7 @@ def MIP_model(points_count, vehicle_count, vehicle_capacity, points_list):
     # model.addConstrs(flow[i] + demand[i] >= flow[j] - BigM * (1 - select[i, j]) for i, j in edges if j != 0)
 
     model.addConstrs((select[i, j] == 1) >> (flow[i] + points_list[j].demand == flow[j])
-                     for i, j in edges if i != 0 and j != 0)
+                     for i, j in edges if j != 0)
     model.addConstrs(points_list[i].demand <= flow[i] for i in customers)
     model.addConstrs(flow[i] <= vehicle_capacity for i in customers)
 
@@ -96,11 +96,11 @@ def MIP_model(points_count, vehicle_count, vehicle_capacity, points_list):
     return vehicle_tours
 
 
-file_path = './R101.txt'
+file_path = './C101.txt'
 point_cnt, vehicle_cnt, vehicle_cap, points_ls = read(file_path)
-print(point_cnt, vehicle_cnt, vehicle_cap, points_ls)
 opt_tours = MIP_model(point_cnt, vehicle_cnt, vehicle_cap, points_ls)
-print(opt_tours)
+for i, t in enumerate(opt_tours):
+    print(f'route{i}:{t}', end='\n')
 
 
 def draw(tours):
