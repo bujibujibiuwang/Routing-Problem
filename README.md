@@ -17,6 +17,11 @@
 - Benchmark: https://www.sintef.no/projectweb/top/vrptw/100-customers/
 - 模型参考：https://github.com/ruthmair/vrp/blob/main/vrptw.ipynb
 
+4**带时间窗约束的取送货车辆路径问题 Pick and delivery problems with time windows (PDPTW)**
+
+- Gurobi + Python
+- Pulp建模库
+- 模型参考：http://www.gurobi.cn/picexhview.asp?id=90
 
 
 模型内容见博客：https://blog.csdn.net/weixin_45526117/article/details/130667269?spm=1001.2014.3001.5502
