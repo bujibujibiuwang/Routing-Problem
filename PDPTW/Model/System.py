@@ -1,11 +1,11 @@
 from dataclasses import dataclass
 from typing import Optional, Dict
-from collections import defaultdict
-from InFileField import *
 from datetime import datetime
-import math
+from collections import defaultdict
 import pandas as pd
+import math
 
+from InFileField import *
 
 
 @dataclass
@@ -122,9 +122,9 @@ class System:
             del_start = self.time_diff_util(row[InOrderFD.DelStart])
             del_end = self.time_diff_util(row[InOrderFD.DelEnd])
             order_obj = Order(id=order_id, match=match_rela, quantity=row[InOrderFD.Quantity],
-                              pick_loca=pick_loca, pick_service=row[InOrderFD.PickService],
+                              pick_loca=pick_loca, pick_service=row[InOrderFD.PickService] * 60,
                               pick_start=pick_start, pick_end=pick_end,
-                              del_loca=del_loca, del_service=row[InOrderFD.DelService],
+                              del_loca=del_loca, del_service=row[InOrderFD.DelService] * 60,
                               del_start=del_start, del_end=del_end)
             self.order_obj_dict[order_id] = order_obj
 

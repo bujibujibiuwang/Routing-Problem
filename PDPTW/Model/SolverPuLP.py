@@ -1,8 +1,13 @@
+import pandas as pd
 from pulp import *
 import networkx as nx
 import matplotlib.pyplot as plt
-from PDPTWSystem import System
+from collections import defaultdict
+from datetime import timedelta
+from typing import Dict
 
+from System import System
+from InFileField import SolveConfig, PDtype
 
 
 class Solver:
@@ -156,6 +161,8 @@ class Solver:
             k, i = key[0], key[1]
             veh_obj = self.system.vehicle_obj_dict[k]
             self.model += (self.q_vars[key] <= veh_obj.max_load, f'{k}_{i}_max_load_cons')
+            if i == self.system.dummy_node_count + 1:
+                self.model += (self.q_vars[key] == 0.0, f'{k}_des_load_zero')
 
     def add_time_cons(self):
         # (7) 时间平衡约束：如果车辆k经过ij，那么到达j的时间=到达i的时间+在i等待的时间+服务i的时间+运输耗时
@@ -175,7 +182,10 @@ class Solver:
                 loca_i_name = self.system.dummy_node_dict[i][1]
                 order_id = self.system.dummy_node_dict[i][0]
                 order_obj = self.system.order_obj_dict[order_id]
-                service_i = order_obj.pick_service
+                if i % 2 != 0:
+                    service_i = order_obj.pick_service
+                else:
+                    service_i = order_obj.del_service
             trans_time = round((self.system.dist_matrix[(loca_i_name, loca_j_name)] / veh_obj.speed) * 3600)
             lhs = self.a_vars[(k, i)] + self.w_vars[(k, i)] + trans_time + (self.x_vars[key] - 1) * big_M + service_i
             self.model += (lhs <= self.a_vars[(k, j)], f'{k}_{i}_{j}_time_balance_cons')
@@ -240,9 +250,8 @@ class Solver:
                 self.model += (lhs <= self.a_vars[(k, node_del)], f'{k}_{i}_{i+1}_seq_cons')
 
     def solve_model(self):
-        self.model.writeLP('PickDeliveryProblem.lp')
-        self.model.solve(GUROBI(msg=True))
-        print(LpStatus[self.model.status])
+        self.model.writeLP('./Result/PickDeliveryPTW.lp')
+        self.model.solve(GUROBI_CMD(msg=True, timeLimit=600, options=[(SolveConfig.Heuristic, 400)]))
         if LpStatus[self.model.status] == 'Infeasible':
             for cons in self.model.constraints.values():
                 print(f'{cons.name}: {cons.value()}')
@@ -252,6 +261,7 @@ class Result:
     def __init__(self, system: System, solver: Solver):
         self.system = system
         self.solver = solver
+        self.routes: Dict[str, Dict] = defaultdict(dict)
 
     def build_graph(self):
         graph = nx.DiGraph()
@@ -260,24 +270,56 @@ class Result:
         graph.add_node(self.system.dummy_node_count + 1)
         for (veh_k, node_i, node_j), var in self.solver.x_vars.items():
             if var and var.varValue > 1e-5:
-                print((veh_k, node_i, node_j))
                 graph.add_edge(node_i, node_j)
-        print(f'-----------------q-----------------')
-        for (veh_k, node_i), var in self.solver.q_vars.items():
-            print(veh_k, node_i, var.varValue)
-        print(f'-----------------a-----------------')
-        for (veh_k, node_i), var in self.solver.a_vars.items():
-            print(veh_k, node_i, var.varValue)
-        print(graph.edges)
+                self.routes[veh_k][node_i] = node_j
         nx.draw(graph, with_labels=True)
-        plt.show()
+        plt.savefig('./Result/PlanSolution.png', dpi=300)
+
+    def export_plan(self):
+        plan_matrix = []
+        for veh_name, veh_route in self.routes.items():
+            curr = 0
+            veh_obj = self.system.vehicle_obj_dict[veh_name]
+            while True:
+                start = self.solver.a_vars[(veh_name, curr)].varValue
+                wait = self.solver.w_vars[(veh_name, curr)].varValue
+                load = self.solver.q_vars[(veh_name, curr)].varValue
+                if curr == 0:
+                    service = 0
+                    order_id, loca, quan = None, veh_obj.origin, None
+                elif curr == self.system.dummy_node_count + 1:
+                    service = 0
+                    order_id, loca, quan = None, veh_obj.des, None
+                else:
+                    order_id, loca, quan = self.system.dummy_node_dict[curr]
+                    order_obj = self.system.order_obj_dict[order_id]
+                    service = order_obj.pick_service
+                depart = start + wait + service
+                real_start = self.system.base_datetime + timedelta(seconds=start)
+                real_depart = self.system.base_datetime + timedelta(seconds=depart)
+                if curr == 0:
+                    type = PDtype.origin.value
+                elif curr == self.system.dummy_node_count + 1:
+                    type = PDtype.des.value
+                elif curr % 2 != 0:
+                    type = PDtype.pick.value
+                else:
+                    type = PDtype.delivery.value
+                row = [veh_name, loca, order_id, real_start, real_depart, type, load, quan]
+                plan_matrix.append(row)
+                if curr == self.system.dummy_node_count + 1:
+                    break
+                curr = veh_route[curr]
+        columns = ['车辆id', '停靠点', '订单id', '到达时间', '离开时间', '地点类型', '到达载货量', '载货变动量']
+        plan_data = pd.DataFrame(plan_matrix, columns=columns)
+        plan_data.to_csv('./Result/PlanSolution.csv', index=False)
 
 
 
-path = 'PDPTWData.xls'
+path = './Data/PDPTWData.xls'
 system = System(path)
-system.print_system_info()
 solver = Solver(system)
 result = Result(system, solver)
 solver.run()
 result.build_graph()
+result.export_plan()

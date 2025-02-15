@@ -1,3 +1,5 @@
+from enum import Enum
+
 class InLocaFD:
     ID = '停靠点ID'
     Longitude = '经度'
@@ -28,3 +30,14 @@ class InOrderFD:
     DelService = '送货服务时间(m)'
     DelStart = '送货时间窗(开始)'
     DelEnd = '送货时间窗(结束)'
+
+
+class SolveConfig:
+    Heuristic = 'NoRelHeurTime'
+
+
+class PDtype(Enum):
+    pick = '取货'
+    delivery = '送货'
+    origin = '起点'
+    des = '终点'
